@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Bird Observations &amp; Frequency Log — Canelas{% endblock %}
+{% block meta_description %}Daily bird species sightings and frequency checklists recorded in Canelas.{% endblock %}
+
+{% block content %}
+<header class="page-title-section">
+    <h2>Bird Species Log</h2>
+    <p>Daily field sightings from Canelas recorded in <code>content/birds/birds.jsonl</code>. Total observations: <strong>{{ total_sightings }}</strong></p>
+</header>
+
+{% if analytics %}
+<section class="bird-analytics-section" aria-labelledby="analytics-heading" style="margin-bottom: 2rem;">
+    <h3 id="analytics-heading">Species Frequency Analytics</h3>
+    <ul style="display: flex; flex-wrap: wrap; gap: 0.6rem; list-style: none; padding: 0;">
+        {% for species, count in analytics %}
+        <li class="analytics-card">
+            <div class="species-count"><data value="{{ count }}">{{ count }}</data></div>
+            <div class="species-name">{{ species }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+<section class="bird-logs-section" aria-labelledby="sightings-heading">
+    <h3 id="sightings-heading">Daily Sightings Checklist</h3>
+    {% for rec in records %}
+    <article class="bird-day-box">
+        <header class="bird-day-header">
+            <time datetime="{{ rec.date }}" class="day-date">{{ rec.date }}</time>
+            <span class="day-count">{{ rec.count }} species recorded</span>
+        </header>
+        <ul class="birds-grid" style="grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.6rem; list-style: none; padding: 0;">
+            {% for species in rec.species %}
+            <li class="bird-card" style="padding: 0.5rem;">
+                <figure style="margin:0;">
+                    <div class="bird-image-container" style="width: 56px; height: 56px; margin: 0 auto 0.3rem;">
+                        <img src="{{ url_for('static', filename='birds/' ~ species|lower|replace(' ', '-') ~ '.png') }}"
+                             alt="Photograph of {{ species }}"
+                             style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--olive-leaf);"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="bird-fallback" aria-hidden="true" style="width: 56px; height: 56px; font-size: 1.3rem;">🐦</div>
+                    </div>
+                    <figcaption class="bird-name" style="font-size: 0.72rem;">{{ species }}</figcaption>
+                </figure>
+            </li>
+            {% endfor %}
+        </ul>
+    </article>
+    {% else %}
+    <p style="color: #888;">No bird checklists recorded yet.</p>
+    {% endfor %}
+</section>
+{% endblock %}

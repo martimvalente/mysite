@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Indie Logbook — Monolith, Flat-Files &amp; Weather Journal{% endblock %}</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="{% block meta_description %}File-backed indie monolith tracking farm logs, micro-climate weather measurements, and bird observations in Canelas.{% endblock %}">
+    <meta name="author" content="Martim">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="Indie Logbook">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.host_url.rstrip('/') }}{{ url_for('static', filename='hero.png') }}{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.og_title() }}">
+    <meta name="twitter:description" content="{{ self.og_description() }}">
+    <meta name="twitter:image" content="{{ self.og_image() }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="site-container">
+        <!-- Site Header -->
+        <header class="site-header">
+            <div class="header-inner">
+                <a href="/" class="site-title-link">
+                    <h1 class="site-title">Indie Logbook</h1>
+                </a>
+                <p class="site-subtitle">Monolith &middot; Flat Files &middot; Zero DB</p>
+            </div>
+            <nav class="site-nav" aria-label="Main Navigation">
+                <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/blog" class="nav-item {% if request.path.startswith('/blog') %}active{% endif %}">Blog</a>
+                <a href="/weather" class="nav-item {% if request.path == '/weather' %}active{% endif %}">Weather</a>
+                <a href="/birds" class="nav-item {% if request.path == '/birds' %}active{% endif %}">Birds</a>
+            </nav>
+        </header>
+
+        <!-- Two-Column Layout -->
+        <div class="layout-body">
+            <!-- Sidebar -->
+            <aside class="sidebar" aria-label="Sidebar Content">
+                <!-- Author Note -->
+                <section class="sidebar-widget">
+                    <h2 class="widget-header">About Author</h2>
+                    <address style="font-style: normal; font-size: 0.85rem;">
+                        Welcome to my cozy personal corner in Canelas. Writing about field maintenance, micro-climate weather, and daily bird sightings.
+                    </address>
+                </section>                <!-- Blog Archive Accordion -->
+                <section class="sidebar-widget">
+                    <h2 class="widget-header">Archive ({{ total_posts_count }})</h2>
+                    <nav aria-label="Blog Archive Tree">
+                        <ul class="archive-tree">
+                            {% for year, months in sidebar_archive_tree.items() %}
+                                <li>
+                                    <details class="archive-year-collapsible" open>
+                                        <summary class="archive-year-summary">
+                                            <a href="/blog?year={{ year }}" class="archive-year-link">{{ year }}</a>
+                                        </summary>
+                                        <ul class="archive-month-list">
+                                            {% for month_name, month_posts in months.items() %}
+                                                <li class="archive-month-group">
+                                                    <span class="archive-month">{{ month_name }} ({{ month_posts|length }})</span>
+                                                    {% for p in month_posts %}
+                                                        <a href="/blog/{{ p.slug }}" class="archive-post-link">{{ p.title }}</a>
+                                                    {% endfor %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </details>
+                                </li>
+                            {% else %}
+                                <li style="color: #999;">No posts logged yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </section>
+
+                <!-- Tag Cloud -->
+                {% if sidebar_all_tags %}
+                <section class="sidebar-widget">
+                    <h2 class="widget-header">Tags</h2>
+                    <nav class="tag-cloud" aria-label="Tag Cloud">
+                        {% for tag in sidebar_all_tags %}
+                            <a href="/blog?tag={{ tag }}" class="tag-pill">#{{ tag }}</a>
+                        {% endfor %}
+                    </nav>
+                </section>
+                {% endif %}
+
+                <!-- Weather Snapshot -->
+                {% if sidebar_latest_weather %}
+                <section class="sidebar-widget">
+                    <h2 class="widget-header">Latest Weather</h2>
+                    <div style="font-family: var(--font-mono); font-size: 0.82rem;">
+                        <p><time datetime="{{ sidebar_latest_weather.date }}"><strong>{{ sidebar_latest_weather.date }}</strong></time></p>
+                        <p>{{ sidebar_latest_weather.precip_mm }} mm rain</p>
+                        <p style="color: #888; margin-top: 0.2rem;">{{ sidebar_latest_weather.conditions }}</p>
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Webrings -->
+                <section class="sidebar-widget">
+                    <h2 class="widget-header">Webrings</h2>
+                    <div class="webring-badges">
+                        <a href="#" rel="noopener">IndieWeb</a>
+                        <a href="#" rel="noopener">512KB Club</a>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content" id="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+        <!-- Site Footer -->
+        <footer>
+            <p>Indie Logbook &middot; Flat-file architecture &middot; Powered by Python &amp; Jinja2 &middot; <a href="/sitemap.xml" style="color: var(--cornsilk); text-decoration: underline;">Sitemap</a> &middot; <a href="/llms.txt" style="color: var(--cornsilk); text-decoration: underline;">llms.txt</a></p>
+        </footer>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Micro-Climate Weather Station Log — Canelas{% endblock %}
+{% block meta_description %}Daily precipitation records for Canelas, logged day by day.{% endblock %}
+
+{% block content %}
+<header class="page-title-section">
+    <h2>Weather Station Log</h2>
+    <p>Daily precipitation records from Canelas recorded in <code>content/weather/weather.jsonl</code>.</p>
+</header>
+
+{% if chart_data %}
+<section class="chart-section" aria-labelledby="chart-heading" style="margin-bottom: 2rem;">
+    <h3 id="chart-heading">Precipitation — Last 14 Days</h3>
+    <figure class="chart-container" style="margin:0;">
+        <svg width="100%" height="180" style="display: block;" aria-label="Precipitation Bar Chart">
+            {% for bar in chart_data %}
+                {% set x = loop.index0 * 36 + 15 %}
+                <rect x="{{ x }}" y="{{ 150 - bar.bar_height }}" width="24" height="{{ bar.bar_height }}"
+                      class="chart-bar" rx="3">
+                    <title>{{ bar.date }}: {{ bar.precip }} mm</title>
+                </rect>
+                <text x="{{ x + 4 }}" y="170" font-size="9" font-family="Space Mono" fill="#606c38">{{ bar.date[5:] }}</text>
+                {% if bar.precip > 0 %}
+                <text x="{{ x + 2 }}" y="{{ 145 - bar.bar_height }}" font-size="10" font-family="Space Mono" fill="#283618">{{ bar.precip }}</text>
+                {% endif %}
+            {% endfor %}
+            <line x1="0" y1="150" x2="100%" y2="150" stroke="#606c38" stroke-width="1" opacity="0.3" />
+        </svg>
+        <figcaption style="font-family: var(--font-mono); font-size: 0.75rem; color: #666; margin-top: 0.5rem; text-align: right;">Daily rainfall in millimeters (mm)</figcaption>
+    </figure>
+</section>
+{% endif %}
+
+<section class="weather-data-section" aria-labelledby="table-heading">
+    <h3 id="table-heading">Data Logs</h3>
+    <div style="overflow-x: auto;">
+        <table class="weather-table">
+            <caption class="sr-only" style="display:none;">Weather measurement history</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Precip (mm)</th>
+                    <th scope="col">Conditions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in records %}
+                    <tr>
+                        <th scope="row" style="font-weight: 700; font-family: var(--font-mono);"><time datetime="{{ row.date }}">{{ row.date }}</time></th>
+                        <td><data value="{{ row.precip_mm }}">{{ row.precip_mm }}</data></td>
+                        <td>{{ row.conditions }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #888;">No weather records logged.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Home — Indie Logbook{% endblock %}
+{% block meta_description %}Personal indie journal, weather log, bird checklists, and agricultural services in Canelas.{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="hero-section" aria-label="Hero Banner">
+    <figure style="margin:0; position:relative;">
+        <img src="{{ url_for('static', filename='hero.png') }}" alt="Scenic landscape of rolling green farmland in rural Canelas" class="hero-img" loading="eager">
+        <figcaption class="hero-overlay">
+            <h1 class="hero-title">Canelas Agricultural Journal &amp; Services</h1>
+            <p class="hero-description">Monitoring micro-climate weather, soil conditions, field biodiversity, and traditional farm management across rural Canelas.</p>
+        </figcaption>
+    </figure>
+</section>
+
+<!-- Agricultural Services (2 x 3 Grid) -->
+<section class="services-section" aria-labelledby="services-heading">
+    <h2 id="services-heading" class="section-heading">🌾 Agricultural Services</h2>
+    <ul class="services-grid">
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/soil-testing.jpg') }}" alt="Farmer hands testing rich dark agricultural soil" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Soil Analysis &amp; Testing</h3>
+                </figcaption>
+            </figure>
+        </li>
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/crop-spraying.jpg') }}" alt="Tractor spraying fields in golden hour sunlight" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Crop Spraying &amp; Protection</h3>
+                </figcaption>
+            </figure>
+        </li>
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/irrigation.jpg') }}" alt="Modern agricultural sprinkler system irrigating crops" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Irrigation &amp; Water Systems</h3>
+                </figcaption>
+            </figure>
+        </li>
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/machinery-rental.jpg') }}" alt="Green modern tractor parked in a farmland field" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Machinery &amp; Tractor Rental</h3>
+                </figcaption>
+            </figure>
+        </li>
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/fencing-maintenance.jpg') }}" alt="Rustic wooden boundary fence along green pasture" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Fence &amp; Field Maintenance</h3>
+                </figcaption>
+            </figure>
+        </li>
+        <li class="service-card">
+            <figure style="margin:0;">
+                <div class="service-card-img-wrap">
+                    <img src="{{ url_for('static', filename='services/harvest-logistics.jpg') }}" alt="Combine harvester working in wheat field during harvest" loading="lazy">
+                </div>
+                <figcaption>
+                    <h3 class="service-card-title">Harvest &amp; Transport Logistics</h3>
+                </figcaption>
+            </figure>
+        </li>
+    </ul>
+</section>
+
+<!-- Weather Cards -->
+{% if latest_weather %}
+<section class="weather-home-grid" aria-label="Latest Weather Metrics">
+    <article class="weather-card">
+        <h3 class="weather-card-label">How much did it rain in Canelas?</h3>
+        <p class="weather-card-value">
+            <data value="{{ latest_weather.precip_mm }}">{{ latest_weather.precip_mm }}</data><span class="weather-card-unit">mm</span>
+        </p>
+    </article>
+    <article class="weather-card">
+        <h3 class="weather-card-label">What was the condition?</h3>
+        <p class="weather-conditions">{{ latest_weather.conditions }}</p>
+    </article>
+</section>
+{% endif %}
+
+<!-- Birds Spotted Today -->
+{% if latest_birds %}
+<section class="birds-home-section" aria-labelledby="birds-heading">
+    <h2 id="birds-heading" class="section-heading">🐦 Birds spotted today</h2>
+    <ul class="birds-grid">
+        {% for species in latest_birds.species %}
+        <li class="bird-card">
+            <a href="/birds" style="text-decoration: none; color: inherit; display: block;">
+                <figure style="margin:0;">
+                    <div class="bird-image-container">
+                        <img src="{{ url_for('static', filename='birds/' ~ species|lower|replace(' ', '-') ~ '.png') }}"
+                             alt="Photograph of {{ species }}"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="bird-fallback" aria-hidden="true">🐦</div>
+                    </div>
+                    <figcaption class="bird-name">{{ species }}</figcaption>
+                </figure>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+<!-- Latest Blog Post -->
+<section class="latest-post-section" aria-labelledby="latest-post-heading">
+    <h2 id="latest-post-heading" class="section-heading">Latest Field Note</h2>
+    {% if recent_post %}
+    <article class="post-card">
+        {% if recent_post.thumbnail %}
+        <figure class="post-thumbnail" style="margin:0;">
+            <img src="{{ recent_post.thumbnail }}" alt="Thumbnail image for {{ recent_post.title }}" loading="lazy">
+        </figure>
+        {% endif %}
+        <div class="post-card-content">
+            <header>
+                <h3 class="post-title"><a href="/blog/{{ recent_post.slug }}">{{ recent_post.title }}</a></h3>
+                <p class="post-meta">
+                    <time datetime="{{ recent_post.date }}" class="post-date">{{ recent_post.date }}</time>
+                    {% if recent_post.tags %}
+                        {% for tag in recent_post.tags %}
+                            <a href="/blog?tag={{ tag }}" class="tag-pill">#{{ tag }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </p>
+            </header>
+            <p class="post-excerpt">{{ recent_post.excerpt }}</p>
+            <footer>
+                <a href="/blog/{{ recent_post.slug }}" class="read-more">Read full entry &rarr;</a>
+            </footer>
+        </div>
+    </article>
+    {% else %}
+        <p style="color: #888;">No blog posts logged yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
