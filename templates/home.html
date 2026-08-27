@@ -1,158 +1,107 @@
 {% extends "base.html" %}
 
-{% block title %}Home — Indie Logbook{% endblock %}
-{% block meta_description %}Personal indie journal, weather log, bird checklists, and agricultural services in Canelas.{% endblock %}
+{% block title %}{{ brand_name }} — Field &amp; Forge Log{% endblock %}
+{% block meta_description %}Home of {{ brand_name }}: blog posts, live weather readings and forge work from {{ site_location }}.{% endblock %}
 
 {% block content %}
-<!-- Hero Banner -->
-<section class="hero-section" aria-label="Hero Banner">
-    <figure style="margin:0; position:relative;">
-        <img src="{{ url_for('static', filename='hero.png') }}" alt="Scenic landscape of rolling green farmland in rural Canelas" class="hero-img" loading="eager">
-        <figcaption class="hero-overlay">
-            <h1 class="hero-title">Canelas Agricultural Journal &amp; Services</h1>
-            <p class="hero-description">Monitoring micro-climate weather, soil conditions, field biodiversity, and traditional farm management across rural Canelas.</p>
-        </figcaption>
-    </figure>
+<header class="page-header">
+    <p class="kicker">{{ site_location }}</p>
+    <h1>Working the land, working the forge</h1>
+</header>
+
+<section aria-label="Introduction">
+    <p><strong>I'm Martim.</strong> I keep a small farm at Póvoa de Baixo, in the parish of Beduído, Estarreja, and split my week between the fields and the forge behind the barn.</p>
+    <p>This site is the logbook: what got planted or sprayed, how much rain fell, which birds turned up, and what came off the anvil. Most of it is written down here before it's written down anywhere else.</p>
 </section>
 
-<!-- Agricultural Services (2 x 3 Grid) -->
-<section class="services-section" aria-labelledby="services-heading">
-    <h2 id="services-heading" class="section-heading">🌾 Agricultural Services</h2>
-    <ul class="services-grid">
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/soil-testing.jpg') }}" alt="Farmer hands testing rich dark agricultural soil" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Soil Analysis &amp; Testing</h3>
-                </figcaption>
-            </figure>
-        </li>
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/crop-spraying.jpg') }}" alt="Tractor spraying fields in golden hour sunlight" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Crop Spraying &amp; Protection</h3>
-                </figcaption>
-            </figure>
-        </li>
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/irrigation.jpg') }}" alt="Modern agricultural sprinkler system irrigating crops" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Irrigation &amp; Water Systems</h3>
-                </figcaption>
-            </figure>
-        </li>
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/machinery-rental.jpg') }}" alt="Green modern tractor parked in a farmland field" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Machinery &amp; Tractor Rental</h3>
-                </figcaption>
-            </figure>
-        </li>
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/fencing-maintenance.jpg') }}" alt="Rustic wooden boundary fence along green pasture" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Fence &amp; Field Maintenance</h3>
-                </figcaption>
-            </figure>
-        </li>
-        <li class="service-card">
-            <figure style="margin:0;">
-                <div class="service-card-img-wrap">
-                    <img src="{{ url_for('static', filename='services/harvest-logistics.jpg') }}" alt="Combine harvester working in wheat field during harvest" loading="lazy">
-                </div>
-                <figcaption>
-                    <h3 class="service-card-title">Harvest &amp; Transport Logistics</h3>
-                </figcaption>
-            </figure>
-        </li>
-    </ul>
-</section>
-
-<!-- Weather Cards -->
-{% if latest_weather %}
-<section class="weather-home-grid" aria-label="Latest Weather Metrics">
-    <article class="weather-card">
-        <h3 class="weather-card-label">How much did it rain in Canelas?</h3>
-        <p class="weather-card-value">
-            <data value="{{ latest_weather.precip_mm }}">{{ latest_weather.precip_mm }}</data><span class="weather-card-unit">mm</span>
-        </p>
-    </article>
-    <article class="weather-card">
-        <h3 class="weather-card-label">What was the condition?</h3>
-        <p class="weather-conditions">{{ latest_weather.conditions }}</p>
-    </article>
-</section>
-{% endif %}
-
-<!-- Birds Spotted Today -->
-{% if latest_birds %}
-<section class="birds-home-section" aria-labelledby="birds-heading">
-    <h2 id="birds-heading" class="section-heading">🐦 Birds spotted today</h2>
-    <ul class="birds-grid">
-        {% for species in latest_birds.species %}
-        <li class="bird-card">
-            <a href="/birds" style="text-decoration: none; color: inherit; display: block;">
-                <figure style="margin:0;">
-                    <div class="bird-image-container">
-                        <img src="{{ url_for('static', filename='birds/' ~ species|lower|replace(' ', '-') ~ '.png') }}"
-                             alt="Photograph of {{ species }}"
-                             loading="lazy"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="bird-fallback" aria-hidden="true">🐦</div>
-                    </div>
-                    <figcaption class="bird-name">{{ species }}</figcaption>
-                </figure>
-            </a>
-        </li>
+<section aria-labelledby="forge-heading" class="forge-section">
+    <h2 id="forge-heading">From the Forge</h2>
+    <p>Blacksmithing is the other half of the work here — most weeks split roughly evenly between the fields and the anvil. This is what regularly comes off it:</p>
+    <div class="forge-row">
+        {% for product in forge_products %}
+        <article class="forge-tile">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+        </article>
         {% endfor %}
-    </ul>
+    </div>
 </section>
-{% endif %}
 
-<!-- Latest Blog Post -->
-<section class="latest-post-section" aria-labelledby="latest-post-heading">
-    <h2 id="latest-post-heading" class="section-heading">Latest Field Note</h2>
-    {% if recent_post %}
-    <article class="post-card">
-        {% if recent_post.thumbnail %}
-        <figure class="post-thumbnail" style="margin:0;">
-            <img src="{{ recent_post.thumbnail }}" alt="Thumbnail image for {{ recent_post.title }}" loading="lazy">
-        </figure>
-        {% endif %}
-        <div class="post-card-content">
-            <header>
-                <h3 class="post-title"><a href="/blog/{{ recent_post.slug }}">{{ recent_post.title }}</a></h3>
-                <p class="post-meta">
-                    <time datetime="{{ recent_post.date }}" class="post-date">{{ recent_post.date }}</time>
-                    {% if recent_post.tags %}
-                        {% for tag in recent_post.tags %}
-                            <a href="/blog?tag={{ tag }}" class="tag-pill">#{{ tag }}</a>
-                        {% endfor %}
-                    {% endif %}
-                </p>
-            </header>
-            <p class="post-excerpt">{{ recent_post.excerpt }}</p>
-            <footer>
-                <a href="/blog/{{ recent_post.slug }}" class="read-more">Read full entry &rarr;</a>
-            </footer>
+<section aria-label="Current weather" class="weather-section">
+    <h2>Right Now</h2>
+    {% if live_meteo %}
+    <div class="stat-row">
+        <div class="stat-cell stat-rain">
+            <span class="stat-label">Rain today</span>
+            <span class="stat-value">{{ live_meteo.rain_today if live_meteo.rain_today is not none else '—' }}<span class="unit">mm</span></span>
         </div>
-    </article>
+        <div class="stat-cell stat-hot">
+            <span class="stat-label">Temperature now</span>
+            <span class="stat-value">{{ live_meteo.temp_now if live_meteo.temp_now is not none else '—' }}<span class="unit">&deg;C</span></span>
+        </div>
+        <div class="stat-cell stat-hot">
+            <span class="stat-label">Range today</span>
+            <span class="stat-value">{{ live_meteo.temp_min_today if live_meteo.temp_min_today is not none else '—' }}&ndash;{{ live_meteo.temp_max_today if live_meteo.temp_max_today is not none else '—' }}<span class="unit">&deg;C</span></span>
+        </div>
+        <div class="stat-cell">
+            <span class="stat-label">Conditions</span>
+            <span class="stat-value stat-condition">{{ live_meteo.condition }}</span>
+        </div>
+    </div>
     {% else %}
-        <p style="color: #888;">No blog posts logged yet.</p>
+    <div class="stat-row"><p class="stat-offline">Station offline — could not reach the meteo service. Try the <a href="/weather">weather page</a> for the hand-logged rain gauge readings.</p></div>
     {% endif %}
+    <p class="chart-caption">Live reading for {{ site_location }}, via Open-Meteo &middot; <a href="/weather">full station log &rarr;</a></p>
+</section>
+
+<section aria-labelledby="posts-heading">
+    <h2 id="posts-heading">Blog Posts</h2>
+    {% if latest_posts %}
+    <div class="post-row">
+        {% for post in latest_posts %}
+        <article class="post-tile">
+            <div class="thumb-wrap">
+                {% if post.thumbnail %}
+                <img src="{{ post.thumbnail }}" alt="Thumbnail for {{ post.title }}" loading="lazy" onload="this.parentElement.classList.add('loaded')">
+                {% endif %}
+            </div>
+            <div class="post-tile-body">
+                <p class="post-tile-meta">{{ post.date }} &middot; {{ post.category }}</p>
+                <h3><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
+                <p>{{ post.excerpt }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-note">No posts logged yet.</p>
+    {% endif %}
+</section>
+
+<section aria-label="Birds seen on site">
+    <div class="birds-teaser">
+        <div>
+            <p class="kicker">Species Log</p>
+            <p>{{ bird_count }} bird{% if bird_count != 1 %}s{% endif %} identified on the land so far.</p>
+        </div>
+        <a href="/birds">View the catalog &rarr;</a>
+    </div>
+</section>
+
+<section aria-labelledby="services-heading">
+    <h2 id="services-heading">Agricultural Services</h2>
+    <div class="services-grid">
+        {% for service in services %}
+        <article class="service-tile">
+            <div class="thumb-wrap">
+                <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.title }}" loading="lazy" onload="this.parentElement.classList.add('loaded')">
+            </div>
+            <div class="service-tile-body">
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.description }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}

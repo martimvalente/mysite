@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_title }} — {{ brand_name }}{% endblock %}
+{% block meta_description %}{{ error_title }} on {{ brand_name }}.{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <p class="code">{{ error_code }}</p>
+    <h2>{{ error_title }}</h2>
+    <p>{{ error_message }}</p>
+    <a href="/">&larr; Back to home</a>
+</section>
+{% endblock %}

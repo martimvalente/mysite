@@ -1,0 +1,21 @@
+{"time": "2026-08-25T00:00", "temp": 19.0, "precip": 0.3, "humidity": 97, "wind": 4.7, "pressure": 1011.6, "clouds": 96, "condition": "Light showers"}
+{"time": "2026-08-25T03:00", "temp": 18.7, "precip": 0.1, "humidity": 98, "wind": 5.5, "pressure": 1011.1, "clouds": 100, "condition": "Overcast"}
+{"time": "2026-08-25T06:00", "temp": 18.3, "precip": 0.1, "humidity": 98, "wind": 3.9, "pressure": 1011.4, "clouds": 99, "condition": "Overcast"}
+{"time": "2026-08-25T09:00", "temp": 18.9, "precip": 0.3, "humidity": 96, "wind": 6.4, "pressure": 1012.1, "clouds": 99, "condition": "Light showers"}
+{"time": "2026-08-25T12:00", "temp": 20.3, "precip": 0.4, "humidity": 90, "wind": 8.3, "pressure": 1012.0, "clouds": 98, "condition": "Light showers"}
+{"time": "2026-08-25T15:00", "temp": 21.5, "precip": 0.3, "humidity": 85, "wind": 4.9, "pressure": 1011.8, "clouds": 87, "condition": "Light showers"}
+{"time": "2026-08-25T18:00", "temp": 22.0, "precip": 0.1, "humidity": 80, "wind": 5.2, "pressure": 1010.3, "clouds": 75, "condition": "Overcast"}
+{"time": "2026-08-25T21:00", "temp": 19.5, "precip": 0.0, "humidity": 93, "wind": 3.3, "pressure": 1010.8, "clouds": 100, "condition": "Overcast"}
+{"time": "2026-08-26T00:00", "temp": 17.9, "precip": 0.0, "humidity": 97, "wind": 4.1, "pressure": 1009.9, "clouds": 100, "condition": "Overcast"}
+{"time": "2026-08-26T03:00", "temp": 17.5, "precip": 0.0, "humidity": 96, "wind": 5.0, "pressure": 1008.6, "clouds": 100, "condition": "Overcast"}
+{"time": "2026-08-26T06:00", "temp": 17.7, "precip": 0.0, "humidity": 86, "wind": 8.9, "pressure": 1005.3, "clouds": 100, "condition": "Overcast"}
+{"time": "2026-08-26T09:00", "temp": 17.2, "precip": 6.8, "humidity": 94, "wind": 13.0, "pressure": 1006.2, "clouds": 100, "condition": "Rain"}
+{"time": "2026-08-26T12:00", "temp": 19.0, "precip": 2.7, "humidity": 90, "wind": 16.6, "pressure": 1005.7, "clouds": 100, "condition": "Thunderstorm"}
+{"time": "2026-08-26T15:00", "temp": 19.1, "precip": 1.9, "humidity": 89, "wind": 16.1, "pressure": 1006.3, "clouds": 86, "condition": "Light showers"}
+{"time": "2026-08-26T18:00", "temp": 19.1, "precip": 0.6, "humidity": 90, "wind": 10.5, "pressure": 1006.6, "clouds": 86, "condition": "Light showers"}
+{"time": "2026-08-26T21:00", "temp": 17.0, "precip": 0.9, "humidity": 96, "wind": 4.7, "pressure": 1008.2, "clouds": 92, "condition": "Light showers"}
+{"time": "2026-08-27T00:00", "temp": 16.6, "precip": 0.3, "humidity": 96, "wind": 8.1, "pressure": 1007.7, "clouds": 98, "condition": "Light showers"}
+{"time": "2026-08-27T03:00", "temp": 16.4, "precip": 2.4, "humidity": 97, "wind": 10.5, "pressure": 1007.1, "clouds": 89, "condition": "Thunderstorm"}
+{"time": "2026-08-27T06:00", "temp": 16.3, "precip": 2.0, "humidity": 93, "wind": 15.0, "pressure": 1005.4, "clouds": 100, "condition": "Light showers"}
+{"time": "2026-08-27T09:00", "temp": 16.3, "precip": 4.0, "humidity": 93, "wind": 13.8, "pressure": 1005.9, "clouds": 100, "condition": "Thunderstorm"}
+{"time": "2026-08-27T12:00", "temp": 17.3, "precip": 2.0, "humidity": 88, "wind": 17.4, "pressure": 1007.0, "clouds": 100, "condition": "Thunderstorm"}

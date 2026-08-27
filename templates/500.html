@@ -1,18 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Server Error (500) — Indie Logbook{% endblock %}
-
-{% block meta_description %}An unexpected error occurred on Indie Logbook.{% endblock %}
+{% block title %}Server Error — {{ brand_name }}{% endblock %}
+{% block meta_description %}An unexpected error occurred on {{ brand_name }}.{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
-<section class="error-page" style="text-align: center; padding: 3rem 1.5rem; background: #fff; border: var(--border-subtle); border-radius: var(--radius);">
-    <h1 style="font-family: var(--font-sans); font-size: 4rem; font-weight: 700; color: var(--copperwood); margin-bottom: 0.5rem;">500</h1>
-    <h2 style="font-family: var(--font-sans); font-size: 1.5rem; font-weight: 600; color: var(--black-forest); margin-bottom: 1rem;">Internal Server Error</h2>
-    <p style="font-family: var(--font-sans); font-size: 0.95rem; color: #666; max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.5;">
-        Something went wrong while processing your request. Please try again shortly.
-    </p>
-    <a href="/" class="read-more" style="display: inline-block; padding: 0.5rem 1.25rem; background: var(--olive-leaf); color: var(--cornsilk); border-radius: 20px; text-decoration: none; font-weight: 500;">
-        &larr; Return to Home Feed
-    </a>
+<section class="error-page">
+    <p class="code">500</p>
+    <h2>Internal Error</h2>
+    <p>Something went wrong while processing that request. Try again shortly.</p>
+    <a href="/">&larr; Back to home</a>
 </section>
 {% endblock %}

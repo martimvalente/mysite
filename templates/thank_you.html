@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Thank You — {{ brand_name }}{% endblock %}
+{% block meta_description %}Thank you for getting in touch with {{ brand_name }}.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <h1>Thank You</h1>
+    <p>Your message has been received. I read everything myself and usually reply within a few days.</p>
+    <a href="/">&larr; Back to home</a>
+</section>
+{% endblock %}

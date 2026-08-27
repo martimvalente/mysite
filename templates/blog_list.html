@@ -1,57 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}{% if selected_tag %}Posts tagged #{{ selected_tag }} — Indie Logbook{% elif selected_year %}Posts from {{ selected_year }} — Indie Logbook{% else %}Blog Archive — Field Notes &amp; Journal{% endif %}{% endblock %}
-
-{% block meta_description %}Browse long-form field notes, farm maintenance logs, and seasonal updates stored as flat Markdown files.{% endblock %}
+{% block title %}{% if selected_category %}{{ selected_category }} — Blog — {{ brand_name }}{% elif selected_year %}{{ selected_year }} — Blog — {{ brand_name }}{% else %}Blog — {{ brand_name }}{% endif %}{% endblock %}
+{% block meta_description %}{% if selected_category %}Blog posts in the "{{ selected_category }}" category on {{ brand_name }}.{% elif selected_year %}Blog posts from {{ selected_year }} on {{ brand_name }}.{% else %}Blog posts from {{ brand_name }}, organised by category and by year.{% endif %}{% endblock %}
 
 {% block content %}
-<section class="blog-header" aria-labelledby="blog-list-title">
-    <h1 id="blog-list-title" style="font-family: var(--font-sans); font-weight: 700; font-size: 1.5rem; color: var(--black-forest);">Field Notes &amp; Blog Archive</h1>
-    {% if selected_tag %}
-        <p class="filter-notice">Showing posts tagged with: <strong>#{{ selected_tag }}</strong> <a href="/blog" class="clear-filter">&times; Clear filter</a></p>
+<header class="page-header">
+    <span class="kicker">Archive</span>
+    <h1>Blog Posts</h1>
+    {% if selected_category %}
+        <p class="filter-notice">Showing category: <strong>{{ selected_category }}</strong> &middot; <a href="/blog">clear filter</a></p>
+    {% elif selected_year %}
+        <p class="filter-notice">Showing year: <strong>{{ selected_year }}</strong> &middot; <a href="/blog">clear filter</a></p>
     {% endif %}
-    {% if selected_year %}
-        <p class="filter-notice">Showing posts from: <strong>{{ selected_year }}</strong> <a href="/blog" class="clear-filter">&times; Clear filter</a></p>
-    {% endif %}
-</section>
+</header>
 
-<section class="post-list" aria-label="Collapsible Post Entries">
+<section aria-label="Posts by year">
     {% for year, year_posts in grouped_posts.items() %}
-        <details class="year-collapsible" open>
+        <details class="year-group" {% if loop.first %}open{% endif %}>
             <summary class="year-summary">
-                <span class="year-summary-title">📁 {{ year }}</span>
-                <span class="year-summary-count">{{ year_posts|length }} {% if year_posts|length == 1 %}entry{% else %}entries{% endif %}</span>
+                <span>{{ year }}</span>
+                <span class="count">{{ year_posts|length }} {% if year_posts|length == 1 %}entry{% else %}entries{% endif %}</span>
             </summary>
-            
-            <div class="year-posts-list">
+            <div class="species-list">
                 {% for post in year_posts %}
-                    <article class="post-card-wrapper" id="post-card-{{ post.slug }}">
-                        <a href="/blog/{{ post.slug }}" class="post-card-link" aria-label="Read full article: {{ post.title }}">
-                            {% if post.thumbnail %}
-                            <figure class="post-thumbnail-full" style="margin:0;">
-                                <img src="{{ post.thumbnail }}" alt="Cover photo for {{ post.title }}" loading="lazy">
-                            </figure>
-                            {% endif %}
-                            
-                            <div class="post-card-content">
-                                <header>
-                                    <h2 class="post-title" style="font-size: 1.3rem; margin-bottom: 0.4rem;">{{ post.title }}</h2>
-                                    <p class="post-meta">
-                                        <time datetime="{{ post.date }}" class="post-date-pill">{{ post.date }}</time>
-                                        {% for tag in post.tags %}
-                                            <span class="tag-pill">#{{ tag }}</span>
-                                        {% endfor %}
-                                    </p>
-                                </header>
-                                <p class="post-excerpt">{{ post.excerpt }}</p>
-                            </div>
-                        </a>
-                    </article>
+                <article class="post-list-item">
+                    <div class="thumb-wrap">
+                        {% if post.thumbnail %}
+                        <img src="{{ post.thumbnail }}" alt="Thumbnail for {{ post.title }}" loading="lazy" onload="this.parentElement.classList.add('loaded')">
+                        {% else %}
+                        <div class="thumb-fallback">No image</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="post-list-meta"><time datetime="{{ post.date }}">{{ post.date }}</time><span class="category">{{ post.category }}</span></p>
+                        <h2><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
+                        <p>{{ post.excerpt }}</p>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </details>
     {% else %}
-        <p style="color: #888; padding: 1.5rem 0;">No blog posts found matching your query.</p>
+        <p class="empty-note">No posts found for this filter.</p>
     {% endfor %}
 </section>
 {% endblock %}

@@ -1,34 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %}{{ post.title }} — Indie Logbook{% endblock %}
+{% block title %}{{ post.title }} — {{ brand_name }}{% endblock %}
 {% block meta_description %}{{ post.excerpt }}{% endblock %}
-{% block og_title %}{{ post.title }} — Indie Logbook{% endblock %}
+{% block og_title %}{{ post.title }} — {{ brand_name }}{% endblock %}
 {% block og_description %}{{ post.excerpt }}{% endblock %}
 {% if post.thumbnail %}
 {% block og_image %}{{ request.host_url.rstrip('/') }}{{ post.thumbnail }}{% endblock %}
 {% endif %}
 
 {% block content %}
-<nav class="post-navigation" aria-label="Post Navigation">
-    <a href="/blog" class="back-link">&larr; Back to Archive</a>
-</nav>
+<a href="/blog" class="post-back">&larr; Back to archive</a>
 
-<article class="single-post">
+<article class="post-standalone">
     <header>
-        <h1 class="post-title-large">{{ post.title }}</h1>
-        <p class="post-meta" style="margin-bottom: 1.5rem;">
-            <time datetime="{{ post.date }}" class="post-date-pill">{{ post.date }}</time>
-            {% if post.tags %}
-                {% for tag in post.tags %}
-                    <a href="/blog?tag={{ tag }}" class="tag-pill">#{{ tag }}</a>
-                {% endfor %}
-            {% endif %}
+        <span class="kicker">{{ post.category }}</span>
+        <h1>{{ post.title }}</h1>
+        <p class="post-byline">
+            <img src="{{ url_for('static', filename='author.svg') }}" alt="Martim">
+            <span>Martim &middot; <time datetime="{{ post.date }}">{{ post.date }}</time></span>
         </p>
     </header>
 
     {% if post.thumbnail %}
-    <figure style="margin: 0 0 1.5rem 0;">
-        <img src="{{ post.thumbnail }}" alt="Feature image for {{ post.title }}" style="width: 100%; border-radius: 8px;" loading="eager">
+    <figure class="feature">
+        <img src="{{ post.thumbnail }}" alt="Feature image for {{ post.title }}" loading="eager">
     </figure>
     {% endif %}
 

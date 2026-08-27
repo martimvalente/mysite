@@ -1,63 +1,149 @@
 {% extends "base.html" %}
 
-{% block title %}Micro-Climate Weather Station Log — Canelas{% endblock %}
-{% block meta_description %}Daily precipitation records for Canelas, logged day by day.{% endblock %}
+{% block title %}Weather Station — {{ brand_name }}{% endblock %}
+{% block meta_description %}Rain-gauge log and detailed meteo station data for {{ site_location }}.{% endblock %}
 
 {% block content %}
-<header class="page-title-section">
-    <h2>Weather Station Log</h2>
-    <p>Daily precipitation records from Canelas recorded in <code>content/weather/weather.jsonl</code>.</p>
+<header class="page-header">
+    <span class="kicker">{{ site_location }}</span>
+    <h1>Weather Station</h1>
+    <p>Daily rainfall recorded by hand, plus a real station record built from the free Open-Meteo service. Only the newest reading is ever polled from the API — everything else here is read back from <code>content/weather/</code>, saved the moment it was confirmed.</p>
 </header>
 
-{% if chart_data %}
-<section class="chart-section" aria-labelledby="chart-heading" style="margin-bottom: 2rem;">
-    <h3 id="chart-heading">Precipitation — Last 14 Days</h3>
-    <figure class="chart-container" style="margin:0;">
-        <svg width="100%" height="180" style="display: block;" aria-label="Precipitation Bar Chart">
-            {% for bar in chart_data %}
-                {% set x = loop.index0 * 36 + 15 %}
-                <rect x="{{ x }}" y="{{ 150 - bar.bar_height }}" width="24" height="{{ bar.bar_height }}"
-                      class="chart-bar" rx="3">
-                    <title>{{ bar.date }}: {{ bar.precip }} mm</title>
-                </rect>
-                <text x="{{ x + 4 }}" y="170" font-size="9" font-family="Space Mono" fill="#606c38">{{ bar.date[5:] }}</text>
-                {% if bar.precip > 0 %}
-                <text x="{{ x + 2 }}" y="{{ 145 - bar.bar_height }}" font-size="10" font-family="Space Mono" fill="#283618">{{ bar.precip }}</text>
-                {% endif %}
-            {% endfor %}
-            <line x1="0" y1="150" x2="100%" y2="150" stroke="#606c38" stroke-width="1" opacity="0.3" />
-        </svg>
-        <figcaption style="font-family: var(--font-mono); font-size: 0.75rem; color: #666; margin-top: 0.5rem; text-align: right;">Daily rainfall in millimeters (mm)</figcaption>
-    </figure>
-</section>
-{% endif %}
-
-<section class="weather-data-section" aria-labelledby="table-heading">
-    <h3 id="table-heading">Data Logs</h3>
-    <div style="overflow-x: auto;">
-        <table class="weather-table">
-            <caption class="sr-only" style="display:none;">Weather measurement history</caption>
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Precip (mm)</th>
-                    <th scope="col">Conditions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in records %}
-                    <tr>
-                        <th scope="row" style="font-weight: 700; font-family: var(--font-mono);"><time datetime="{{ row.date }}">{{ row.date }}</time></th>
-                        <td><data value="{{ row.precip_mm }}">{{ row.precip_mm }}</data></td>
-                        <td>{{ row.conditions }}</td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="3" style="text-align: center; color: #888;">No weather records logged.</td>
-                    </tr>
+<section class="tabs" aria-label="Weather charts">
+    <input type="radio" name="weather-tab" id="tab-temp" checked>
+    <input type="radio" name="weather-tab" id="tab-precip">
+    <div class="tab-labels">
+        <label for="tab-temp">Temperature</label>
+        <label for="tab-precip">Precipitation</label>
+    </div>
+    <div class="tab-panels">
+        <div class="tab-panel" id="panel-temp">
+            {% if temp_chart %}
+            <div class="chart-legend">
+                <span><span class="swatch max"></span>Max &deg;C</span>
+                <span><span class="swatch min"></span>Min &deg;C</span>
+            </div>
+            <svg viewBox="0 0 {{ temp_chart.width }} {{ temp_chart.height }}" width="100%" role="img" aria-label="Daily maximum and minimum temperature">
+                <line x1="{{ temp_chart.pad }}" y1="{{ temp_chart.baseline_y }}" x2="{{ temp_chart.width - temp_chart.pad }}" y2="{{ temp_chart.baseline_y }}" stroke="#ccc" stroke-width="1"></line>
+                <polyline points="{{ temp_chart.max_line }}" fill="none" stroke="#c0392b" stroke-width="3"></polyline>
+                <polyline points="{{ temp_chart.min_line }}" fill="none" stroke="#2563eb" stroke-width="3"></polyline>
+                {% for label in temp_chart.labels %}
+                    {% if label.show %}
+                    <text x="{{ label.x }}" y="{{ temp_chart.height - 6 }}" font-size="10" font-family="Arial, Helvetica, sans-serif" fill="#555">{{ label.date }}</text>
+                    {% endif %}
                 {% endfor %}
-            </tbody>
-        </table>
+            </svg>
+            <p class="chart-caption">Range on record: {{ temp_chart.vmin }}&deg;C – {{ temp_chart.vmax }}&deg;C, via Open-Meteo, saved locally</p>
+            {% else %}
+            <p class="chart-caption">No local temperature readings saved yet.</p>
+            {% endif %}
+        </div>
+        <div class="tab-panel" id="panel-precip">
+            {% if precip_chart %}
+            <svg viewBox="0 0 {{ precip_chart.width }} {{ precip_chart.height }}" width="100%" role="img" aria-label="Daily precipitation">
+                <line x1="{{ precip_chart.pad }}" y1="{{ precip_chart.baseline_y }}" x2="{{ precip_chart.width - precip_chart.pad }}" y2="{{ precip_chart.baseline_y }}" stroke="#ccc" stroke-width="1"></line>
+                {% for bar in precip_chart.bars %}
+                <rect x="{{ bar.x }}" y="{{ bar.y }}" width="{{ bar.width }}" height="{{ bar.height }}" fill="#2563eb">
+                    <title>{{ bar.date }}: {{ bar.value }} mm</title>
+                </rect>
+                {% if bar.show_label %}
+                <text x="{{ bar.x }}" y="{{ precip_chart.height - 6 }}" font-size="10" font-family="Arial, Helvetica, sans-serif" fill="#555">{{ bar.date }}</text>
+                {% endif %}
+                {% endfor %}
+            </svg>
+            <p class="chart-caption">Peak day on record: {{ precip_chart.max }} mm, via Open-Meteo, saved locally</p>
+            {% else %}
+            <p class="chart-caption">No local precipitation readings saved yet.</p>
+            {% endif %}
+        </div>
     </div>
 </section>
+
+<h2>Rain Gauge — Logged By Hand</h2>
+<div class="data-table-wrap">
+    <table class="data-table">
+        <caption>content/weather/weather.jsonl</caption>
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Precip (mm)</th>
+                <th scope="col">Temp min/max (&deg;C)</th>
+                <th scope="col">Conditions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+                <tr>
+                    <th scope="row"><time datetime="{{ row.date }}">{{ row.date }}</time></th>
+                    <td>{{ row.precip_mm }}</td>
+                    <td>{{ row.temp_c_min if row.temp_c_min is not none else '—' }} / {{ row.temp_c_max if row.temp_c_max is not none else '—' }}</td>
+                    <td>{{ row.conditions or '—' }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">No hand-logged readings yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<details class="lazy-block" id="meteo-details">
+    <summary>Detailed station data &mdash; 3-hourly</summary>
+    <div class="lazy-block-body" id="meteo-body">Loading station data&hellip;</div>
+</details>
+
+<script>
+(function () {
+  var details = document.getElementById('meteo-details');
+  var body = document.getElementById('meteo-body');
+  var loaded = false;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  function render(rows) {
+    if (!rows || rows.length === 0) {
+      body.textContent = 'No station data saved yet.';
+      return;
+    }
+    var html = '<div class="data-table-wrap"><table class="data-table">' +
+      '<caption>content/weather/station_hourly.jsonl</caption>' +
+      '<thead><tr><th>Time</th><th>Temp (&deg;C)</th><th>Precip (mm)</th><th>Humidity (%)</th>' +
+      '<th>Wind (km/h)</th><th>Pressure (hPa)</th><th>Cloud (%)</th><th>Conditions</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      html += '<tr><th scope="row">' + escapeHtml(r.time.replace('T', ' ')) + '</th>' +
+        '<td>' + escapeHtml(r.temp) + '</td>' +
+        '<td>' + escapeHtml(r.precip) + '</td>' +
+        '<td>' + escapeHtml(r.humidity) + '</td>' +
+        '<td>' + escapeHtml(r.wind) + '</td>' +
+        '<td>' + escapeHtml(r.pressure) + '</td>' +
+        '<td>' + escapeHtml(r.clouds) + '</td>' +
+        '<td>' + escapeHtml(r.condition) + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    body.innerHTML = html;
+  }
+
+  details.addEventListener('toggle', function () {
+    if (details.open && !loaded) {
+      loaded = true;
+      fetch('/weather/meteo.json')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.error && (!data.rows || data.rows.length === 0)) {
+            body.textContent = data.error;
+            return;
+          }
+          render(data.rows);
+        })
+        .catch(function () {
+          body.textContent = 'Could not load station data — check the connection and try again.';
+        });
+    }
+  });
+})();
+</script>
 {% endblock %}
