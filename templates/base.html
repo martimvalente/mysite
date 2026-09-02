@@ -61,6 +61,31 @@
             </section>
 
             <section class="sidebar-widget">
+                <h2>Right Now</h2>
+                <div class="weather-now">
+                    {% if sidebar_live_weather %}
+                    <div class="stat-row compact">
+                        <div class="stat-cell stat-hot">
+                            <span class="stat-label">Temp</span>
+                            <span class="stat-value">{{ sidebar_live_weather.temp_now if sidebar_live_weather.temp_now is not none else '—' }}<span class="unit">&deg;C</span></span>
+                        </div>
+                        <div class="stat-cell stat-rain">
+                            <span class="stat-label">Rain today</span>
+                            <span class="stat-value">{{ sidebar_live_weather.rain_today if sidebar_live_weather.rain_today is not none else '—' }}<span class="unit">mm</span></span>
+                        </div>
+                    </div>
+                    <p class="weather-now-condition">{{ sidebar_live_weather.condition }}</p>
+                    {% else %}
+                    <p class="stat-offline">Station offline right now.</p>
+                    {% endif %}
+                    {% if sidebar_latest_weather %}
+                    <p class="weather-now-hand">Hand-logged <time datetime="{{ sidebar_latest_weather.date }}">{{ sidebar_latest_weather.date }}</time>: {{ sidebar_latest_weather.precip_mm }} mm</p>
+                    {% endif %}
+                    <a href="/weather" class="snapshot-link">Full station log &rarr;</a>
+                </div>
+            </section>
+
+            <section class="sidebar-widget">
                 <h2>Archive ({{ total_posts_count }})</h2>
                 <nav aria-label="Blog archive by year">
                     <ul class="archive-tree">
@@ -95,19 +120,6 @@
                 </nav>
             </section>
             {% endif %}
-
-            <section class="sidebar-widget">
-                <h2>Rain Gauge</h2>
-                <div class="snapshot-readout">
-                    {% if sidebar_latest_weather %}
-                        <p><time datetime="{{ sidebar_latest_weather.date }}"><span class="value">{{ sidebar_latest_weather.date }}</span></time></p>
-                        <p>{{ sidebar_latest_weather.precip_mm }} mm logged by hand</p>
-                    {% else %}
-                        <p>No readings logged yet.</p>
-                    {% endif %}
-                    <a href="/weather" class="snapshot-link">Full station log &rarr;</a>
-                </div>
-            </section>
 
             <section class="sidebar-widget">
                 <h2>Species Log</h2>

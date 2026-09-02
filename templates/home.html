@@ -27,33 +27,6 @@
     </div>
 </section>
 
-<section aria-label="Current weather" class="weather-section">
-    <h2>Right Now</h2>
-    {% if live_meteo %}
-    <div class="stat-row">
-        <div class="stat-cell stat-rain">
-            <span class="stat-label">Rain today</span>
-            <span class="stat-value">{{ live_meteo.rain_today if live_meteo.rain_today is not none else '—' }}<span class="unit">mm</span></span>
-        </div>
-        <div class="stat-cell stat-hot">
-            <span class="stat-label">Temperature now</span>
-            <span class="stat-value">{{ live_meteo.temp_now if live_meteo.temp_now is not none else '—' }}<span class="unit">&deg;C</span></span>
-        </div>
-        <div class="stat-cell stat-hot">
-            <span class="stat-label">Range today</span>
-            <span class="stat-value">{{ live_meteo.temp_min_today if live_meteo.temp_min_today is not none else '—' }}&ndash;{{ live_meteo.temp_max_today if live_meteo.temp_max_today is not none else '—' }}<span class="unit">&deg;C</span></span>
-        </div>
-        <div class="stat-cell">
-            <span class="stat-label">Conditions</span>
-            <span class="stat-value stat-condition">{{ live_meteo.condition }}</span>
-        </div>
-    </div>
-    {% else %}
-    <div class="stat-row"><p class="stat-offline">Station offline — could not reach the meteo service. Try the <a href="/weather">weather page</a> for the hand-logged rain gauge readings.</p></div>
-    {% endif %}
-    <p class="chart-caption">Live reading for {{ site_location }}, via Open-Meteo &middot; <a href="/weather">full station log &rarr;</a></p>
-</section>
-
 <section aria-labelledby="posts-heading">
     <h2 id="posts-heading">Blog Posts</h2>
     {% if latest_posts %}

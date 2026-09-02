@@ -673,6 +673,11 @@ def inject_global_sidebar():
     weather_records = get_weather_records()
     latest_weather = weather_records[0] if weather_records else None
 
+    # Cached site-wide (900s TTL, shared with anywhere else that wants it) so
+    # the sidebar's "Right Now" panel can show live conditions on every page
+    # without hitting Open-Meteo on every request.
+    live_meteo = _cached("live_meteo", 900, _fetch_live_meteo)
+
     return {
         "brand_name": BRAND,
         "brand_tagline": BRAND_TAGLINE,
@@ -684,6 +689,7 @@ def inject_global_sidebar():
         "sidebar_archive_tree": archive_tree,
         "sidebar_categories": sidebar_categories,
         "sidebar_latest_weather": latest_weather,
+        "sidebar_live_weather": live_meteo,
         "sidebar_species_count": len(get_bird_catalog()),
         "total_posts_count": len(posts),
     }
@@ -720,13 +726,11 @@ def _log_pageview(response):
 def home():
     posts = get_all_posts()
     latest_posts = posts[:4]
-    live_meteo = _cached("live_meteo", 900, _fetch_live_meteo)
     bird_count = len(get_bird_catalog())
 
     return render_template(
         "home.html",
         latest_posts=latest_posts,
-        live_meteo=live_meteo,
         bird_count=bird_count,
         services=SERVICES,
         forge_products=FORGE_PRODUCTS,

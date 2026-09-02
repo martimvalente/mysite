@@ -1,10 +1,14 @@
 /* ==========================================================================
-   CapitalDoTrabalho — barebones stylesheet.
-   No web fonts, no CSS framework: system Arial/Georgia, plain browser
-   defaults (underlined links, native <details> markers) everywhere except
-   the navbar, which is the one deliberately "designed" element on the page.
-   The weather numbers are the other deliberate exception — colour and size
-   are used there, and nowhere else, to make the station data pop.
+   CapitalDoTrabalho — old-personal-blog stylesheet.
+   No web fonts, no CSS framework, no JS beyond the checkbox/details hacks:
+   system Courier New for body copy (the one typewriter-blog signature),
+   system Arial for headings and chrome, plain browser defaults (underlined
+   links, native <details> markers) otherwise. Sidebar modules are boxed
+   with a dark header bar — a nod to old Blogger/Blogspot widget styling —
+   so the "Right Now" weather readout and the archive read as distinct
+   instrument panels rather than a loose list. Colour and size on the
+   weather numbers are the other deliberate exception, to make the station
+   data pop against everything else's restraint.
    ========================================================================== */
 
 :root {
@@ -37,18 +41,21 @@ table { border-collapse: collapse; width: 100%; }
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-serif);
-  font-size: 17px;
-  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.65;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-h1, h2, h3 { line-height: 1.25; margin: 0 0 0.6rem; }
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; margin-top: 2.2rem; }
-h3 { font-size: 1.1rem; }
+/* Headings stay in the sans face so they read as structure, not body copy —
+   the one deliberate typographic split, in the spirit of an old-school
+   personal blog where headings and post text are visibly different faces. */
+h1, h2, h3 { line-height: 1.25; margin: 0 0 0.6rem; font-family: var(--font-sans); }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.3rem; margin-top: 2.2rem; }
+h3 { font-size: 1.05rem; }
 p { margin: 0 0 0.9rem; }
 
 a { color: var(--link); }
@@ -134,15 +141,25 @@ code { font-family: var(--font-mono); }
   flex: 1;
 }
 
-.sidebar { display: flex; flex-direction: column; gap: 1.8rem; font-family: var(--font-sans); font-size: 0.88rem; }
+.sidebar { display: flex; flex-direction: column; gap: 1.1rem; font-family: var(--font-sans); font-size: 0.88rem; }
+
+/* Boxed widgets with a dark header bar — the one signature borrowed from
+   old Blogger/Blogspot templates: every sidebar module reads as its own
+   little instrument panel rather than a loose list. */
+.sidebar-widget {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 0 1rem 1rem;
+}
 .sidebar-widget h2 {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #666;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 0.35rem;
-  margin: 0 0 0.6rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  background: var(--ink);
+  border-bottom: none;
+  margin: 0 -1rem 0.7rem;
+  padding: 0.5rem 1rem;
 }
 .sidebar-widget address { font-style: normal; color: #444; }
 
@@ -159,6 +176,16 @@ code { font-family: var(--font-mono); }
 .snapshot-readout .value { font-size: 1.1rem; font-weight: bold; }
 .snapshot-readout p { margin-bottom: 0.2rem; color: #444; }
 .snapshot-link { display: inline-block; margin-top: 0.3rem; }
+
+/* Right Now — the sidebar weather widget (moved here from the home page). */
+.weather-now .stat-row.compact {
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0 0 0.5rem;
+}
+.weather-now .stat-cell { border-left: none; padding: 0; }
+.weather-now .stat-value { font-size: 1.5rem; }
+.weather-now-condition { font-size: 0.85rem; color: #444; margin: 0 0 0.5rem; }
+.weather-now-hand { font-size: 0.78rem; color: #666; margin: 0 0 0.4rem; }
 
 .main-content { min-width: 0; max-width: var(--main-max); }
 
@@ -196,11 +223,13 @@ code { font-family: var(--font-mono); }
 .page-header h1 { margin-bottom: 0.3rem; }
 .page-header p { color: #444; max-width: 60ch; }
 
-/* Forge — the featured section: a plain bordered box is the one bit of
-   emphasis this page gets besides the weather numbers. */
+/* Forge — the featured section. A top/bottom rule rather than a full box:
+   enough emphasis to read as "the" section on the page without the page
+   feeling boxed-in. */
 .forge-section {
-  border: 2px solid var(--ink);
-  padding: 1.5rem 1.7rem;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+  padding: 1.3rem 0 1.6rem;
   margin: 2rem 0;
 }
 .forge-section h2 { margin-top: 0; }
@@ -213,9 +242,8 @@ code { font-family: var(--font-mono); }
 .forge-tile h3 { margin-bottom: 0.3rem; }
 .forge-tile p { color: #444; margin-bottom: 0; }
 
-/* Weather — the other featured section: plain box, colour does the work. */
-.weather-section { background: var(--muted); border: 1px solid var(--line); padding: 1.5rem 1.7rem; margin: 2rem 0; }
-.weather-section h2 { margin-top: 0; }
+/* Stat primitives — now used by the sidebar "Right Now" widget (see the
+   Sidebar section above) and the weather page's chart legend. */
 .stat-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
@@ -441,5 +469,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .post-list-item { grid-template-columns: 1fr; }
   .species-card { grid-template-columns: 1fr; }
   .stat-cell { border-left: none; }
-  .forge-section, .weather-section { padding: 1.2rem; }
+  .forge-section { padding: 1.2rem 0 1.4rem; }
 }
